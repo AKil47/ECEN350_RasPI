@@ -1,0 +1,14 @@
+.section .text
+.globl lab02d 
+
+lab02d:
+	ADD X0,X0,#1000
+	ADR X1, myvalue
+	STUR X0, [X1, 0]
+	MOV X0,X1
+	BR X30
+
+.section .data
+
+myvalue:
+.byte 0
