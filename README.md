@@ -8,9 +8,15 @@ The labs are divided into two main sections:
 
 - Verilog CPU Labs - Labs where we built different components of a CPU before ultimately combining them together into a fully functional CPU.
 
-# Things to Look For
+## Aggie Honor Code
 
-The hope is that this repo will serve as a reference in the future. Some of the cool things that I did are:
+> An Aggie does not lie, cheat or steal or tolerate those who do.
+
+**This repo contains answers to lab assignments for ECEN 350**. Since this repository is a fork of the main repository that we get the starter code from, I am unable to make this repo private. I encourage active students to seek help from the TAs (like I did) instead of copying from here.
+
+## Things to Look For
+
+The hope is that this repo will serve as a reference in the future if I ever do anything related to assembly/verilog. Some of the cool things that I did are:
 
 - Writing in ARM assembly
   - Doing math operations
