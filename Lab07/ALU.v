@@ -1,3 +1,5 @@
+// Define constants
+
 `define AND   4'b0000
 `define OR    4'b0001
 `define ADD   4'b0010
@@ -15,13 +17,16 @@ module ALU(BusW, BusA, BusB, ALUCtrl, Zero);
     reg     [63:0] BusW;
     
     always @(ALUCtrl or BusA or BusB) begin
+    // For each ALU action, do the appropriate response
         case(ALUCtrl)
-            `AND: begin
-                BusW = ...;
-            end
-            ...
+            `AND: begin BusW = BusA & BusB; end // Bitwise AND
+            `OR: begin BusW = BusA | BusB; end // Bitwise OR
+            `ADD: begin BusW = BusA + BusB; end // ADD
+            `SUB: begin BusW = BusA - BusB; end // SUB
+            `PassB: begin BusW = BusB; end // Simply return B
         endcase
     end
 
-    assign Zero = 
+    // Zero bit is based on output of BusW
+    assign Zero = (BusW == 0);
 endmodule
