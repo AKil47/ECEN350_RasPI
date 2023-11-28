@@ -24,7 +24,7 @@ module control(
 	       output reg 	branch,
 	       output reg 	uncond_branch,
 	       output reg [3:0] aluop,
-	       output reg [1:0] signop,
+	       output reg [2:0] signop,
 	       input [10:0] 	opcode
 	       );
 
@@ -33,7 +33,121 @@ module control(
 	casez (opcode)
 
           /* Add cases here for each instruction your processor supports */
-
+	  //LDUR flags
+	  `OPCODE_LDUR:
+	    begin
+               reg2loc       = 1'bx;
+               alusrc        = 1'b1;
+               mem2reg       = 1'b1;
+               regwrite      = 1'b1;
+               memread       = 1'b1;
+               memwrite      = 1'b0;
+               branch        = 1'b0;
+               uncond_branch = 1'b0;
+               aluop         = 4'b0010;
+               signop        = 3'b01;
+            end
+	   
+	  // STUR flags  
+	  `OPCODE_STUR:
+	    begin
+               reg2loc       = 1'b1;
+               alusrc        = 1'b1;
+               mem2reg       = 1'bx;
+               regwrite      = 1'b0;
+               memread       = 1'b0;
+               memwrite      = 1'b1;
+               branch        = 1'b0;
+               uncond_branch = 1'b0;
+               aluop         = 4'b0010;
+               signop        = 3'b01;
+            end
+	    
+	  // CBZ Type Instructions  
+	  `OPCODE_CBZ:
+	    begin
+               reg2loc       = 1'b1;
+               alusrc        = 1'b0;
+               mem2reg       = 1'bx;
+               regwrite      = 1'b0;
+               memread       = 1'b0;
+               memwrite      = 1'b0;
+               branch        = 1'b1;
+               uncond_branch = 1'b0;
+               aluop         = 4'b0111;
+               signop        = 3'b11;
+            end
+	    
+	  // B Type Instructions  
+	  `OPCODE_B:
+	    begin
+               reg2loc       = 1'bx;
+               alusrc        = 1'bx;
+               mem2reg       = 1'bx;
+               regwrite      = 1'b0;
+               memread       = 1'b0;
+               memwrite      = 1'b0;
+               branch        = 1'bx;
+               uncond_branch = 1'b1;
+               aluop         = 4'bxxxx;
+               signop        = 3'b10;
+            end
+	    
+	  // R Type Instructions  
+	  `OPCODE_ANDREG, `OPCODE_ORRREG, `OPCODE_ADDREG, `OPCODE_SUBREG:
+	    begin
+               reg2loc       = 1'b0;
+               alusrc        = 1'b0;
+               mem2reg       = 1'b0;
+               regwrite      = 1'b1;
+               memread       = 1'b0;
+               memwrite      = 1'b0;
+               branch        = 1'b0;
+               uncond_branch = 1'b0;
+               signop        = 3'b10;
+	       casez (opcode)
+		    `OPCODE_ANDREG: aluop = 4'b0000;
+		    `OPCODE_ORRREG: aluop = 4'b0001;
+		    `OPCODE_ADDREG: aluop = 4'b0010;
+		    `OPCODE_SUBREG: aluop = 4'b0110;
+	       endcase 
+            end
+	    
+	  // I Type Instructions
+	  `OPCODE_ADDIMM, `OPCODE_SUBIMM:
+	    begin
+               reg2loc       = 1'b0;
+               alusrc        = 1'b1;
+               mem2reg       = 1'b0;
+               regwrite      = 1'b1;
+               memread       = 1'b0;
+               memwrite      = 1'b0;
+               branch        = 1'b0;
+               uncond_branch = 1'b0;
+               signop        = 3'bxxx;
+	       casez (opcode)
+		    `OPCODE_ADDIMM: aluop = 4'b0010;
+		    `OPCODE_SUBIMM: aluop = 4'b0110;
+	       endcase 
+            end
+	    
+	  // MOV type instructions
+	    
+	  `OPCODE_MOVZ:
+	    begin
+               reg2loc       = 1'bx;
+               alusrc        = 1'b1;
+               mem2reg       = 1'b0;
+               regwrite      = 1'b1;
+               memread       = 1'b0;
+               memwrite      = 1'b0;
+               branch        = 1'b0;
+               uncond_branch = 1'b0;
+	       aluop         = 4'b0111;
+               signop        = 3'b100;
+            end
+	    
+	  
           default:
             begin
                reg2loc       = 1'bx;
@@ -45,7 +159,7 @@ module control(
                branch        = 1'b0;
                uncond_branch = 1'b0;
                aluop         = 4'bxxxx;
-               signop        = 2'bxx;
+               signop        = 3'bxxx;
             end
 	endcase
      end

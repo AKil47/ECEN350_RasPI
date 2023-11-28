@@ -1,4 +1,10 @@
 `timescale 1ns / 1ps
+
+`define OPCODE_MOVZ   9'b110100101
+`define OPCODE_ORRREG 11'b00101010000
+`define OPCODE_STUR   11'b11111000000
+`define OPCODE_LDUR   11'b11111000010
+
 /*
  * Module: InstructionMemory
  *
@@ -17,6 +23,11 @@ module InstructionMemory(Data, Address);
     * ECEN 350 Processor Test Functions
     * Texas A&M University
     */
+    
+    reg [31:0] test;
+    
+    
+
    
    always @ (Address) begin
 
@@ -46,19 +57,34 @@ module InstructionMemory(Data, Address);
 	 */
 	
 
-	63'h000: Data = 32'hF84003E9;
-	63'h004: Data = 32'hF84083EA;
-	63'h008: Data = 32'hF84103EB;
-	63'h00c: Data = 32'hF84183EC;
-	63'h010: Data = 32'hF84203ED;
-	63'h014: Data = 32'hAA0B014A;
-	63'h018: Data = 32'h8A0A018C;
-	63'h01c: Data = 32'hB400008C;
-	63'h020: Data = 32'h8B0901AD;
-	63'h024: Data = 32'hCB09018C;
-	63'h028: Data = 32'h17FFFFFD;
-	63'h02c: Data = 32'hF80203ED;
-	63'h030: Data = 32'hF84203ED;  //One last load to place stored value on memdbus for test checking.
+	63'h000: Data = 32'hf84003e9;
+	63'h004: Data = 32'hf84083ea;
+	63'h008: Data = 32'hf84103eb;
+	63'h00c: Data = 32'hf84183ec;
+	63'h010: Data = 32'hf84203ed;
+	63'h014: Data = 32'haa0b014a;
+	63'h018: Data = 32'h8a0a018c;
+	63'h01c: Data = 32'hb400008c;
+	63'h020: Data = 32'h8b0901ad;
+	63'h024: Data = 32'hcb09018c;
+	63'h028: Data = 32'h17fffffd;
+	63'h02c: Data = 32'hf80203ed;
+	63'h030: Data = 32'hf84203ed;  //One last load to place stored value on memdbus for test checking
+	
+	63'h034: Data = {`OPCODE_MOVZ, 2'b11, 16'h1234, 5'd9}; //MOVZ 0xh1234 LSL 48 11010010 (11 11) 0xh1234 9
+	63'h038: Data = {`OPCODE_MOVZ, 2'b10, 16'h5678, 5'd10}; //MOVK 0xh5678 LSL 32              10
+	63'h03c: Data = {`OPCODE_MOVZ, 2'b01, 16'h9abc, 5'd11}; //MOVK 0xh9abc LSL 16            01
+	63'h040: Data = {`OPCODE_MOVZ, 2'b00, 16'hdef0, 5'd12}; //MOVK 0xhdef0
+	
+	63'h044: Data = {`OPCODE_ORRREG, 5'd9, 6'd0, 5'd10, 5'd9}; // OR X9 X9 X10
+	63'h048: Data = {`OPCODE_ORRREG, 5'd9, 6'd0, 5'd11, 5'd9}; // OR X9 X9 X10
+	63'h04c: Data = {`OPCODE_ORRREG, 5'd9, 6'd0, 5'd12, 5'd9}; // OR X9 X9 X10
+	
+	63'h050: Data = {`OPCODE_STUR, 9'h28, 2'd0, 5'd31, 5'd9}; // STUR X9, [XZR, #0x28]
+	63'h054: Data = {`OPCODE_LDUR, 9'h28, 2'd0, 5'd31, 5'd10}; // LDUR X10, [XZR, #0x28]	
+	
+	63'h058: Data = 32'hf84203ea;  //One last load to place stored value on memdbus for test checking				
+					
 
 	/* Add code for your tests here */
 

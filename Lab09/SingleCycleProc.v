@@ -22,6 +22,7 @@ module singlecycle(
    wire [10:0] 			     opcode;
 
    // Control wires
+   wire [63:0] readOut;
    wire 			     reg2loc;
    wire 			     alusrc;
    wire 			     mem2reg;
@@ -31,7 +32,7 @@ module singlecycle(
    wire 			     branch;
    wire 			     uncond_branch;
    wire [3:0] 			     aluctrl;
-   wire [1:0] 			     signop;
+   wire [2:0] 			     signop;
 
    // Register file connections
    wire [63:0] 			     regoutA;     // Output A
@@ -82,6 +83,63 @@ module singlecycle(
     * Connect the remaining datapath elements below.
     * Do not forget any additional multiplexers that may be required.
     */
+    
+    SignExtender_Example see( //gives 64 bit for everything else
+      .BusImm(extimm),
+      .Imm16(instruction[25:0]),
+      .Ctrl(signop)
+    ); 
+    
+    /*Mux21 bget( 
+    out(busB), 
+    in(, 
+    sel); */
+    
+    wire [63:0] rb;
+    
+    assign rb = (alusrc) ?  extimm : regoutB; //gives new regout depending on alusrc 
+    
+    MiniRegisterFile mrf(//gives BUS A and BUSB
+      .BusA(regoutA),
+      .BusB(regoutB),
+      .BusW(MemtoRegOut),
+      .RA(rm),
+      .RB(rn),
+      .RW(rd),
+      .RegWr(regwrite),
+      .Clk(CLK)
+      );
+    
+    
+    ALU alu(//Gives BusW
+      .BusW(aluout),
+      .BusA(regoutA),
+      .BusB(rb),
+      .ALUCtrl(aluctrl),
+      .Zero(zero)
+    );
+    
+    DataMemory dm(
+      .ReadData(readOut),
+      .Address(aluout),
+      .WriteData(regoutB),
+      .MemoryRead(memread),
+      .MemoryWrite(memwrite),
+      .Clock(CLK)
+      );
+    
+   assign MemtoRegOut = (mem2reg) ? readOut : aluout;
+
+    
+    NextPClogic npl(
+       .NextPC(nextpc),
+       .CurrentPC(currentpc),
+       .SignExtImm64(extimm),
+       .Branch(branch),
+       .ALUZero(zero),
+       .Uncondbranch(uncond_branch)
+    );
+    
 
 
 

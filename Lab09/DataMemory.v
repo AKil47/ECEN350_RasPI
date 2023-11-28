@@ -9,6 +9,7 @@ module DataMemory(ReadData , Address , WriteData , MemoryRead , MemoryWrite , Cl
    output reg [63:0] ReadData;
 
    reg [7:0] 	     memBank [`SIZE-1:0];
+   
 
 
    // This task is used to write arbitrary data to the Data Memory by
