@@ -71,6 +71,7 @@ module Mux21Test_v;
 	);
 
 	initial begin
+	$dumpfile("Mux21.vcd"); $dumpvars;
 		// Initialize Inputs
 		in = 0;
 		sel = 0;

@@ -58,7 +58,10 @@ module HalfAddTest_v;
 		.A(A), 
 		.B(B)
 	        );
-
+   initial begin
+      $dumpfile("HalfAdd.vcd"); $dumpvars;
+      end
+      
    initial begin
       // Initialize Inputs
       A = 0;

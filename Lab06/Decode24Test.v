@@ -56,6 +56,7 @@ module Decode24Test_v;
 	);
 
 	initial begin
+		$dumpfile("Decode24.vcd"); $dumpvars;
 		// Initialize Inputs
 		in = 0;
 		passed = 0;
