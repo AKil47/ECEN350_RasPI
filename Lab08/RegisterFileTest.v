@@ -25,6 +25,11 @@
 `define STRLEN 32
 module RegisterFileTest_v;
 
+initial begin
+      $dumpfile("RegisterFile.vcd");
+      $dumpvars(0, RegisterFileTest_v);
+end
+
 
    task passTest;
       input [63:0] actualOut, expectedOut;
@@ -57,7 +62,7 @@ module RegisterFileTest_v;
    wire [63:0] 	  BusB;
 
    // Instantiate the Unit Under Test (UUT)
-   RegisterFile uut (
+   MiniRegisterFile uut (
 		     .BusA(BusA), 
 		     .BusB(BusB), 
 		     .BusW(BusW), 
@@ -253,8 +258,34 @@ module RegisterFileTest_v;
       passTest(BusA, 64'd0, "Initial Value Check 31", passed);
       #6; Clk = 0; #10; Clk = 1;
       passTest(BusA, 64'd0, "Value Not Updated 16", passed);
+      
+      // Our custom test cases for prob 3
+      Clk = 1;
+      {RA, RB, RW, RegWr, BusW} = {5'h0, 5'h1, 5'h0, 1'b0, 64'h0}; #10;Clk = 0; #10; Clk = 1;
+      passTest({BusA, BusB}, {64'h0, 64'h12345678}, "Row 1 in Table", passed);
+      
+      {RA, RB, RW, RegWr, BusW} = {5'h2, 5'h3, 5'h1, 1'b0, 64'h1000}; #10;Clk = 0; #10; Clk = 1;
+      passTest({BusA, BusB}, {64'h0, 64'h3}, "Row 2 in Table", passed);
+      
+      {RA, RB, RW, RegWr, BusW} = {5'h4, 5'h5, 5'h0, 1'b1, 64'h1000}; #10;Clk = 0; #10; Clk = 1;
+      passTest({BusA, BusB}, {64'h0, 64'h5}, "Row 3 in Table", passed);
+      
+      {RA, RB, RW, RegWr, BusW} = {5'h6, 5'h7, 5'ha, 1'b1, 64'h1010}; #10;Clk = 0; #10; Clk = 1;
+      passTest({BusA, BusB}, {64'h0, 64'h7}, "Row 4 in Table", passed);
+      
+      {RA, RB, RW, RegWr, BusW} = {5'h8, 5'h9, 5'hb, 1'b1, 64'h103000}; #10;Clk = 0; #10; Clk = 1;
+      passTest({BusA, BusB}, {64'h0, 64'h9}, "Row 5 in Table", passed);
+      
+      {RA, RB, RW, RegWr, BusW} = {5'ha, 5'hb, 5'hc, 1'b0, 64'h0}; #10;Clk = 0; #10; Clk = 1;
+      passTest({BusA, BusB}, {64'h0, 64'h103000}, "Row 6 in Table", passed);
+      
+      {RA, RB, RW, RegWr, BusW} = {5'hc, 5'hd, 5'hd, 1'b1, 64'habcd}; #10;Clk = 0; #10; Clk = 1;
+      passTest({BusA, BusB}, {64'h0, 64'habcd}, "Row 7 in Table", passed);
+      
+      {RA, RB, RW, RegWr, BusW} = {5'he, 5'hf, 5'he, 1'b0, 64'h9080009}; #10;Clk = 0; #10; Clk = 1;
+      passTest({BusA, BusB}, {64'h0, 64'hf}, "Row 8 in Table", passed);
 
-      allPassed(passed, 68);
+      allPassed(passed, 76);
    end
    
 endmodule
