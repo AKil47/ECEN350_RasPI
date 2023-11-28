@@ -7,3 +7,17 @@ The labs are divided into two main sections:
 - ARM Assembly Labs (Lab 1 - 5) - Different labs that has us writing ARM assembly.
 
 - Verilog CPU Labs - Labs where we built different components of a CPU before ultimately combining them together into a fully functional CPU.
+
+# Things to Look For
+
+The hope is that this repo will serve as a reference in the future. Some of the cool things that I did are:
+
+- Writing in ARM assembly
+  - Doing math operations
+  - Moving data into registers and memory
+  - Calling functions (manipulating SP, calling conventions, etc)
+  - Recursion
+- Bridging assembly code to C (using compiler/linker)
+- Writing makefiles
+  - The `makefile` for Lab 9 is completly custom. The other ones were just modified
+- Writing in Verilog
